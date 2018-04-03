@@ -2,9 +2,43 @@
 <html>
   <head>
     <title>Java Script Game</title>
+    <style type="text/css">
+		
+		.btn{
+			display: block;
+			position: fixed;
+			left: 520px;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			height: 20px;
+			width: 150px;
+		}
+		#Pause,#Resume{
+			top:40px;
+		}
+		#Resume{
+			top:72px;
+		}
+	</style>
   </head>
   <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.min.js"></script>
     <script type="text/javascript" src="snake.js"></script>
+    <script type="text/javascript">
+      function onRestart(){
+        refresh();
+        IsPaused=false;
+      }
+      function onPause(){
+        IsPaused=true;
+        // document.getElementById("Start").id="Resume";
+      }
+      function onResume(){
+        IsPaused=false;
+      }
+  </script>
+  <button name="Start" id="Retart" class="btn" onclick="onRestart()">Restart</button><br>
+  <button name="Pause" id="Pause" class="btn" onclick="onPause()">Pause</button><br>
+  <button name="Start" id="Resume" class="btn" onclick="onResume()">Resume</button>
   </body>
 </html>
