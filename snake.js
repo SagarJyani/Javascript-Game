@@ -8,6 +8,7 @@ var ship;
 var skore = 0;
 var hits = 0;
 var highscore = 0;
+var IsPaused=true;
 
 function missile(x,y){
   this.x = x;
@@ -40,6 +41,7 @@ function setup() {
   for (var i=0;i<100;i++){
     missiles.push(newMissile());
   }
+  document.getElementById("defaultCanvas0")
   console.log(missiles);
 
 }
@@ -53,29 +55,30 @@ function draw() {
 
 function spawn(item,index){
 
-  // Map function implementation
-
-  for (var i=0;i<totalballs;i++){
-    m=missiles[i];
-    if (!(m.lifespan>51)){
-      idx = missiles.indexOf(m);
-      m = newMissile();
-    }
-    else{
-      m.x = (500 + m.x + (ship.x-m.x)*m.speed)%500;
-      m.y = (500 + m.y + (ship.y-m.y)*m.speed)%500;
-      m.lifespan -=2;
-      fill(m.lifespan);
-      stroke(51);
-      ellipse(m.x,m.y, ballSize, ballSize);
-      // console.log("Bye");
-      // console.log(m.lifespan);
-    }
-    missiles[i] = m;
-    if(detect_collision(m.x, m.y)){
-      missiles[i].lifespan = 0;
-    }
-  }
+  // Map function implementation  
+	for (var i=0;i<totalballs;i++){
+	    m=missiles[i];
+	    if (!(m.lifespan>51)){
+	      idx = missiles.indexOf(m);
+	      m = newMissile();
+	    }
+	    else{
+		  if(!IsPaused){
+		      m.x = (500 + m.x + (ship.x-m.x)*m.speed)%500;
+		      m.y = (500 + m.y + (ship.y-m.y)*m.speed)%500;
+		      m.lifespan -=2;
+		  }
+	      fill(m.lifespan);
+	      stroke(51);
+	      ellipse(m.x,m.y, ballSize, ballSize);
+	      // console.log("Bye");
+	      // console.log(m.lifespan);
+	    }
+	    missiles[i] = m;
+	    if(detect_collision(m.x, m.y)){
+	      missiles[i].lifespan = 0;
+	    }
+	}
 
 }
 
@@ -103,36 +106,38 @@ function drawSpaceship(){
 }
 
 function updateShip(){
-  if (keyIsDown(LEFT_ARROW)) {
-    ship.x = (500 + ship.x - shipSpeed)%500;
-    fill("ORANGE");
-    triangle(ship.x-ship.w/2    , ship.y-ship.h/2,
-             ship.x-ship.w/2    , ship.y+ship.h/2,
-             ship.x+ship.w/2+20 , ship.y);
-  } else if (keyIsDown(RIGHT_ARROW)) {
-    ship.x = (500 + ship.x + shipSpeed)%500;
-    fill("ORANGE");
-    triangle(ship.x+ship.w/2    , ship.y-ship.h/2,
-             ship.x+ship.w/2    , ship.y+ship.h/2,
-             ship.x-ship.w/2-20 , ship.y);
-  }
-  if (keyIsDown(UP_ARROW)){
-    ship.y = (500 + ship.y - shipSpeed)%500;
-    fill("ORANGE");
-    triangle(ship.x-ship.w/2    , ship.y-ship.h/2,
-             ship.x+ship.w/2    , ship.y-ship.h/2,
-             ship.x             , ship.y+ship.h/2+20);
-  } else if (keyIsDown(DOWN_ARROW)){
-    ship.y = (500 + ship.y + shipSpeed)%500;
-    fill("ORANGE");
-    triangle(ship.x-ship.w/2    , ship.y+ship.h/2,
-             ship.x+ship.w/2    , ship.y+ship.h/2,
-             ship.x             , ship.y-ship.h/2-20);
+  if(!IsPaused){
+  	if (keyIsDown(LEFT_ARROW)) {
+      ship.x = (500 + ship.x - shipSpeed)%500;
+      fill("ORANGE");
+      triangle(ship.x-ship.w/2    , ship.y-ship.h/2,
+               ship.x-ship.w/2    , ship.y+ship.h/2,
+               ship.x+ship.w/2+20 , ship.y);
+    } else if (keyIsDown(RIGHT_ARROW)) {
+      ship.x = (500 + ship.x + shipSpeed)%500;
+      fill("ORANGE");
+      triangle(ship.x+ship.w/2    , ship.y-ship.h/2,
+               ship.x+ship.w/2    , ship.y+ship.h/2,
+               ship.x-ship.w/2-20 , ship.y);
+    }
+    if (keyIsDown(UP_ARROW)){
+      ship.y = (500 + ship.y - shipSpeed)%500;
+      fill("ORANGE");
+      triangle(ship.x-ship.w/2    , ship.y-ship.h/2,
+               ship.x+ship.w/2    , ship.y-ship.h/2,
+               ship.x             , ship.y+ship.h/2+20);
+    } else if (keyIsDown(DOWN_ARROW)){
+      ship.y = (500 + ship.y + shipSpeed)%500;
+      fill("ORANGE");
+      triangle(ship.x-ship.w/2    , ship.y+ship.h/2,
+               ship.x+ship.w/2    , ship.y+ship.h/2,
+               ship.x             , ship.y-ship.h/2-20);
+    }
   }
 }
 
 function count() {
-  skore += 1/30;
+  if(!IsPaused){skore += 1/30;}
   highscore = highscore>skore?highscore:skore;
   totalballs = Math.ceil(skore/10);
   fill("WHITE");
@@ -151,8 +156,9 @@ function count() {
   }
   if (hits == 11){
     hits++;
-    alert("Game Over !"+"\nYour Score is : "+Math.ceil(skore));
+    // alert("Game Over !"+"\nYour Score is : "+Math.ceil(skore));
     refresh();
+    IsPaused=true;
   }
 }
 
@@ -161,8 +167,9 @@ function refresh(){
   ballSize = 20;
   shipSpeed = 4;
   missiles = [];
-  totalballs = 3;
+  totalballs = 1;
   ship;
+  IsPaused=true;
   skore = 0;
   hits = 0;
   setup();
